@@ -77,11 +77,25 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const expectedData = await productsCollection.findOne(query);
       const withUID = { ...expectedData, loggedUser };
-
-      const result = await cartCollection.insertOne(withUID);
+      const option = { upsert: true };
+      const update = {
+        $set: {
+          ...withUID,
+        },
+      };
+      const result = await cartCollection.updateOne(query, update, option);
 
       res.send(result);
       console.log(withUID);
+    });
+
+    // delete from cart
+    app.delete(`/addcart/:id`, async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const result = await cartCollection.deleteOne(query);
+      res.send(result);
     });
 
     // add user
