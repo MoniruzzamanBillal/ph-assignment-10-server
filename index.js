@@ -89,6 +89,27 @@ async function run() {
       console.log(withUID);
     });
 
+    //  update item
+    app.put("/update/:id", async (req, res) => {
+      const id = req.params.id;
+
+      console.log(id);
+
+      const updatedData = req.body;
+      console.log(updatedData);
+      const query = { _id: new ObjectId(id) };
+      const option = { upsert: true };
+      const update = {
+        $set: {
+          ...updatedData,
+        },
+      };
+      const result = await productsCollection.updateOne(query, update, option);
+      res.send(result);
+
+      //
+    });
+
     // delete from cart
     app.delete(`/addcart/:id`, async (req, res) => {
       const id = req.params.id;
