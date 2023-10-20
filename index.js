@@ -81,7 +81,7 @@ async function run() {
       const result = await cartCollection.insertOne(withUID);
 
       res.send(result);
-      // console.log(withUID);
+      console.log(withUID);
     });
 
     // add user
