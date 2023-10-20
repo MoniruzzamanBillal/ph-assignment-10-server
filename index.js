@@ -9,9 +9,6 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-console.log(process.env.DB_USER);
-console.log(process.env.DB_PASS);
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@coffeemaster.pnefqpd.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, {
@@ -24,39 +21,63 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    //   const dataBase = client.db("CoffeeMaster");
-    //   const dataCollection = dataBase.collection("coffeeRecipe");
-    //   const userCollection = dataBase.collection("userCollection");
+    const dataBase = client.db("brandShop");
+    const productsCollection = dataBase.collection("allProducts");
+    const cartCollection = dataBase.collection("cart");
 
-    // get all recipe
-    //   app.get("/recipe", async (req, res) => {
-    //     const response = dataCollection.find();
-    //     const responseData = await response.toArray();
-    //     console.log(responseData);
-    //     res.send(responseData);
-    //   });
+    // get all phone data
+    app.get("/all_items", async (req, res) => {
+      const response = productsCollection.find();
+      const products = await response.toArray();
+      res.send(products);
+    });
 
-    // get single data
-    //   app.get("/recipe/:id", async (req, res) => {
-    //     const id = req.params.id;
-    //     const query = { _id: new ObjectId(id) };
+    // get all phone data based on phone brand
+    app.get("/brand/:name", async (req, res) => {
+      const brandname = req.params.name;
+      console.log(brandname);
+      const query = { brandName: brandname };
+      const response = await productsCollection.find(query);
+      const expectedData = await response.toArray();
+      console.log(expectedData);
+      res.send(expectedData);
+    });
 
-    //     const expectedData = await dataCollection.findOne(query);
+    // get single phone data , based on id
+    app.get("/product/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const expectedData = await productsCollection.findOne(query);
+      // console.log(expectedData);
+      res.send(expectedData);
+    });
 
-    //     console.log(expectedData);
+    // add product
+    app.post("/product", async (req, res) => {
+      const data = req.body;
 
-    //     res.send(expectedData);
-    //   });
+      console.log(data);
+      const result = await productsCollection.insertOne(data);
 
-    // add recipe
-    //   app.post("/recipe", async (req, res) => {
-    //     const data = req.body;
+      res.send(result);
+    });
 
-    //     console.log(data);
-    //     const result = await dataCollection.insertOne(data);
+    // add product to cart
+    app.post("/addcart", async (req, res) => {
+      const data = req.body;
 
-    //     res.send(result);
-    //   });
+      const { id, loggedUser } = data;
+
+      const query = { _id: new ObjectId(id) };
+      const expectedData = await productsCollection.findOne(query);
+      const withUID = { ...expectedData, loggedUser };
+
+      const result = await cartCollection.insertOne(withUID);
+
+      res.send(result);
+      // console.log(withUID);
+    });
 
     // add user
     //   app.post("/user", async (req, res) => {
