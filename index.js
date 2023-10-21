@@ -117,41 +117,6 @@ async function run() {
       res.send(result);
     });
 
-    // add user
-    //   app.post("/user", async (req, res) => {
-    //     const data = req.body;
-
-    //     console.log(data);
-
-    //     const result = await userCollection.insertOne(data);
-
-    //     res.send(result);
-    //   });
-
-    // update item
-    //   app.put("/recipe/:id", async (req, res) => {
-    //     const id = req.params.id;
-    //     const updatedData = req.body;
-    //     console.log(updatedData);
-    //     const query = { _id: new ObjectId(id) };
-    //     const option = { upsert: true };
-    //     const update = {
-    //       $set: {
-    //         ...updatedData,
-    //       },
-    //     };
-    //     const result = await dataCollection.updateOne(query, update, option);
-    //     res.send(result);
-    //   });
-
-    // delete a recipe
-    //   app.delete(`/recipe/:id`, async (req, res) => {
-    //     const id = req.params.id;
-    //     const query = { _id: new ObjectId(id) };
-    //     const result = await dataCollection.deleteOne(query);
-    //     res.send(result);
-    //   });
-
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
